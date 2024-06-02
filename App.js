@@ -10,6 +10,7 @@ import StudentHomeScreen from './src/StudentHomeScreen';
 import ParentHome from './src/ParentHome';
 import ServisStartScreen from './src/ServisStartScreen';
 import StudentStartScreen from './src/StudentStartScreen';
+import RizaMetni from './src/RizaMetni';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,7 @@ function App() {
           </Stack.Group>
 
           <Stack.Group screenOptions={{ title: 'Öğrenci Kullanıcısı' }}>
+            <Stack.Screen name='RizaMetni' component={RizaMetni} />
             <Stack.Screen name='StudentHomeScreen' component={StudentHomeScreen} />
             <Stack.Screen name='StudentStartScreen' component={StudentStartScreen} />
           </Stack.Group>

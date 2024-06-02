@@ -71,7 +71,7 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.checkboxText}>Beni Hatırla</Text>
             </View>
 
-            <View style={styles.checkboxContainer}>
+            {/* <View style={styles.checkboxContainer}>
                 <TouchableOpacity
                     style={[styles.checkbox, consent && styles.checked]}
                     onPress={() => setConsent(!consent)}
@@ -79,7 +79,7 @@ const LoginScreen = ({ navigation }) => {
                     {consent && <Icon name="check" size={15} color="#fff" />}
                 </TouchableOpacity>
                 <Text style={styles.checkboxText}>Rıza Metnini Okudum Onaylıyorum</Text>
-            </View>
+            </View> */}
 
             <TouchableOpacity style={[styles.button, { width: '100%' }]} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Giriş Yap</Text>

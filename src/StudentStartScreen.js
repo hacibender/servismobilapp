@@ -3,8 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput } from 'reac
 import MapView from 'react-native-maps';
 import moment from 'moment';
 import 'moment/locale/tr';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 
@@ -48,7 +46,7 @@ const StudentStartScreen = ({ navigation }) => {
                         </View>
                     </View>
                     <View style={styles.servisbuttonarea}>
-                        <TouchableOpacity onPress={konumGoster} style={styles.konumButonu}>
+                        <TouchableOpacity /*onPress={konumGoster}*/ style={styles.konumButonu}>
                             <Icon name="location-on" size={18} color="#2E7D32" />
                             <Text style={styles.konumText}>Konumu Göster</Text>
                         </TouchableOpacity>
@@ -93,7 +91,7 @@ const StudentStartScreen = ({ navigation }) => {
                         <Text style={styles.ogrenciMetni}>Siz (Emre)</Text>
                     </View>
                     <View>
-                        <TouchableOpacity onPress={konumGoster} style={styles.konumButonu}>
+                        <TouchableOpacity /*onPress={konumGoster}*/ style={styles.konumButonu}>
                             <Icon name="location-on" size={18} color="#2E7D32" />
                             <Text style={styles.konumText}>Konumumu Göster</Text>
                         </TouchableOpacity>
