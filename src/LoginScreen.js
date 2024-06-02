@@ -25,7 +25,7 @@ const LoginScreen = ({ navigation }) => {
         if (userType) {
             const userScreenMapping = {
                 Servis: 'ServisHomeScreen',
-                Öğrenci: 'StudentHomeScreen',
+                Öğrenci: 'RizaMetni',
                 Veli: 'ParentHome',
             };
             const targetScreen = userScreenMapping[userType];
