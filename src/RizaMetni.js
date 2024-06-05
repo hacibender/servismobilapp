@@ -45,7 +45,7 @@ const RizaMetni = ({ navigation }) => {
                     culpa qui officia deserunt mollit anim id est laborum.
                 </Text>
                 <View>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('StudentHomeScreen')}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('LocationSelect')}>
                         <Text style={styles.buttonText}>Okudum, Onaylıyorum</Text>
                     </TouchableOpacity>
                 </View>

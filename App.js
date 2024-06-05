@@ -11,6 +11,8 @@ import ParentHome from './src/ParentHome';
 import ServisStartScreen from './src/ServisStartScreen';
 import StudentStartScreen from './src/StudentStartScreen';
 import RizaMetni from './src/RizaMetni';
+import LocationSelect from './src/LocationSelect';
+import LocationConfirmation from './src/LocationConfirmation';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +33,8 @@ function App() {
 
           <Stack.Group screenOptions={{ title: 'Öğrenci Kullanıcısı' }}>
             <Stack.Screen name='RizaMetni' component={RizaMetni} />
+            <Stack.Screen name='LocationSelect' component={LocationSelect} />
+            <Stack.Screen name='LocationConfirmation' component={LocationConfirmation} />
             <Stack.Screen name='StudentHomeScreen' component={StudentHomeScreen} />
             <Stack.Screen name='StudentStartScreen' component={StudentStartScreen} />
           </Stack.Group>
