@@ -29,7 +29,7 @@ const StudentStartScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Parent View</Text>
+            <Text style={styles.title}>Öğrenci Takip</Text>
             <View style={styles.mapContainer}>
                 <MapView style={styles.map} />
             </View>

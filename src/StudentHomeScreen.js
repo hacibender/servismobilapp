@@ -23,7 +23,7 @@ const StudentHomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Student Home</Text>
+            <Text style={styles.title}>Veli Home</Text>
             <View style={styles.mapContainer}>
                 <MapView style={styles.map} />
             </View>
@@ -31,15 +31,15 @@ const StudentHomeScreen = ({ navigation }) => {
                 <Text style={styles.dateTimeText}>{currentDateTime}</Text>
             </View>
             <View style={styles.studentquestion}>
-                <Text style={styles.studentquestionText}>Bugün Okula Gelecek Misin?</Text>
+                <Text style={styles.studentquestionText}>Öğrenciniz Bugün Okula Gelecek Mi ?</Text>
             </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.buttongreen} onPress={() => navigation.navigate('StudentStartScreen')}>
-                    <Text style={styles.buttonTextgreen}>Geliyorum</Text>
+                    <Text style={styles.buttonTextgreen}>Evet</Text>
                 </TouchableOpacity>
                 <View style={styles.gelmiyorum}>
                     <TouchableOpacity style={styles.buttonred} onPress={openModal}>
-                        <Text style={styles.buttonTextred}>Gelmiyorum</Text>
+                        <Text style={styles.buttonTextred}>Hayır</Text>
                     </TouchableOpacity>
                     <Modal
                         animationType='slide'

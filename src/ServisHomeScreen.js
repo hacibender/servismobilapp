@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native';
 import MapView from 'react-native-maps';
 import moment from 'moment';
 import 'moment/locale/tr';
@@ -9,6 +9,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const ServisHomeScreen = ({ navigation }) => {
     const currentDateTime = moment().locale('tr').format('DD MMMM dddd HH:mm');
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const openModal = () => {
+        setModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setModalVisible(false);
+    }
 
     return (
         <View style={styles.container}>
@@ -20,9 +29,33 @@ const ServisHomeScreen = ({ navigation }) => {
                 <Text style={styles.dateTimeText}>{currentDateTime}</Text>
             </View>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button} onPress={() => console.log("SEFERE BAŞLA")}>
-                    <Text style={styles.buttonText} onPress={() => navigation.navigate('ServisStartScreen')}>SEFERE BAŞLA</Text>
-                </TouchableOpacity>
+                <View style={styles.gelmiyorum}>
+                    <TouchableOpacity style={styles.buttonred} onPress={openModal}>
+                        <Text style={styles.buttonTextred}>Sefere Başla</Text>
+                    </TouchableOpacity>
+                    <Modal
+                        animationType='slide'
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={closeModal}>
+                        <View style={styles.modalContainer}>
+                            <View style={styles.modalContent}>
+                                <TouchableOpacity style={styles.popupbutton} onPress={() => {
+                                    navigation.navigate('ServisStartScreen');
+                                    closeModal();
+                                }}>
+                                    <Text>Sefer No:1</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.popupbutton} onPress={() => {
+                                    navigation.navigate('ServisStartScreen');
+                                    closeModal();
+                                }}>
+                                    <Text>Sefer No:2</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Modal>
+                </View>
             </View>
             <View style={styles.bottomMenu}>
                 <TouchableOpacity style={styles.bottomMenuItem} onPress={() => navigation.navigate('ServisStudentList')}>
@@ -86,6 +119,48 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    buttonred: {
+        flexDirection: 'row',
+        gap: 5,
+        backgroundColor: '#fff',
+        borderColor: '#2E7D32',
+        borderWidth: 1,
+        height: 40,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    gelmiyorum: {
+        width: '100%'
+    },
+    buttonTextred: {
+        color: '#2E7D32',
+        fontSize: 14,
+        textAlign: 'center',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.5)'
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        width: '80%',
+        alignItems: 'center',
+        gap: 20,
+    },
+    modalTitle: {
+        fontSize: 20,
+        textAlign: 'center'
+    },
+    modalText: {
+        fontWeight: 'semibold',
+        fontSize: 16,
+        textAlign: 'center'
     },
     buttonText: {
         color: '#2E7D32',

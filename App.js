@@ -31,7 +31,7 @@ function App() {
             <Stack.Screen name='ServisStartScreen' component={ServisStartScreen} />
           </Stack.Group>
 
-          <Stack.Group screenOptions={{ title: 'Öğrenci Kullanıcısı' }}>
+          <Stack.Group screenOptions={{ title: 'Veli Kullanıcısı' }}>
             <Stack.Screen name='RizaMetni' component={RizaMetni} />
             <Stack.Screen name='LocationSelect' component={LocationSelect} />
             <Stack.Screen name='LocationConfirmation' component={LocationConfirmation} />
@@ -39,7 +39,7 @@ function App() {
             <Stack.Screen name='StudentStartScreen' component={StudentStartScreen} />
           </Stack.Group>
 
-          <Stack.Group screenOptions={{ title: 'Veli Kullanıcısı' }}>
+          <Stack.Group screenOptions={{ title: 'Öğrenci Kullanıcısı' }}>
             <Stack.Screen name='ParentHome' component={ParentHome} />
           </Stack.Group>
 

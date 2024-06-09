@@ -14,9 +14,9 @@ const LoginScreen = ({ navigation }) => {
 
         if (username === 'Servis' && password === 'Servis') {
             setUserType('Servis');
-        } else if (username === 'Ogrenci' && password === 'Ogrenci') {
-            setUserType('Öğrenci');
         } else if (username === 'Veli' && password === 'Veli') {
+            setUserType('Öğrenci');
+        } else if (username === 'Ogrenci' && password === 'Ogrenci') {
             setUserType('Veli');
         } else {
             alert('Hatalı kullanıcı adı veya şifre!');
