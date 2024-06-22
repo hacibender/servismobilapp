@@ -8,7 +8,6 @@ export const handleTokenRefresh = async () => {
             throw new Error('No refresh token available');
         }
         const { accessToken, refreshToken: newRefreshToken } = await refreshAccessToken(refreshToken);
-        // Yeni token'ları sakla
         await AsyncStorage.setItem('accessToken', accessToken);
         await AsyncStorage.setItem('refreshToken', newRefreshToken);
         return accessToken;

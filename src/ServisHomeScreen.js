@@ -1,15 +1,30 @@
-import React, { useState, } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import moment from 'moment';
 import 'moment/locale/tr';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import MapViewDirections from 'react-native-maps-directions';
+
+const GOOGLE_MAPS_APIKEY = '<AIzaSyBHQRCFiRddxgqe52RO0ua3E21RwyAwwvU>';
 
 const ServisHomeScreen = ({ navigation }) => {
     const currentDateTime = moment().locale('tr').format('DD MMMM dddd HH:mm');
     const [modalVisible, setModalVisible] = useState(false);
+
+    const [startingPoint, setStartingPoint] = useState({
+        latitude: 41.0315,
+        longitude: 28.9761,
+    });
+
+    const studentsLocations = [
+        { latitude: 41.0328, longitude: 28.9783 },
+        { latitude: 41.0389, longitude: 28.9648 },
+    ];
+
+    const destinationPoint = { latitude: 41.0595, longitude: 28.9216 };
 
     const openModal = () => {
         setModalVisible(true);
@@ -23,7 +38,31 @@ const ServisHomeScreen = ({ navigation }) => {
         <View style={styles.container}>
             <Text style={styles.title}>Servis Home</Text>
             <View style={styles.mapContainer}>
-                <MapView style={styles.map} />
+                <MapView style={styles.map} initialRegion={{
+                    latitude: 41.0315,
+                    longitude: 28.9761,
+                    latitudeDelta: 0.05,
+                    longitudeDelta: 0.05,
+                }}>
+                    <Marker coordinate={startingPoint} title="Başlangıç Noktası" />
+                    {studentsLocations.map((location, index) => (
+                        <Marker
+                            key={index}
+                            coordinate={location}
+                            title={`Öğrenci ${index + 1}`}
+                        />
+                    ))}
+                    <Marker coordinate={destinationPoint} title="Varış Noktası" />
+                    <MapViewDirections
+                        origin={startingPoint}
+                        waypoints={studentsLocations}
+                        destination={destinationPoint}
+                        apikey={GOOGLE_MAPS_APIKEY}
+                        strokeWidth={3}
+                        strokeColor="hotpink"
+                        optimizeWaypoints={true}
+                    />
+                </MapView>
             </View>
             <View style={styles.dateTimeContainer}>
                 <Text style={styles.dateTimeText}>{currentDateTime}</Text>
@@ -71,7 +110,7 @@ const ServisHomeScreen = ({ navigation }) => {
                     <Text style={styles.bottomMenuText}>Profil</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </View >
     );
 };
 

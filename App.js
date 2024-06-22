@@ -22,7 +22,7 @@ function App() {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: true }} >
 
-          <Stack.Screen name="Login" component={LoginScreen} />
+          {/* <Stack.Screen name="Login" component={LoginScreen} /> */}
 
           <Stack.Group screenOptions={{ title: 'Service Screen' }}>
             <Stack.Screen name='ServisHomeScreen' component={ServisHomeScreen} />

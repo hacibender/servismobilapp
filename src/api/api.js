@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { handleTokenRefresh } from './helpers/authHelper';
 
 const api = axios.create({
-    baseURL: 'https://rest-j2kjfrifbq-ez.a.run.app/api-docs/',
+    baseURL: 'https://rest-j2kjfrifbq-ez.a.run.app',
     timeout: 10000,
 });
 

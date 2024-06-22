@@ -1,27 +1,18 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { login } from './api/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from './hoc/AuthContext';
+
 
 const LoginScreen = ({ navigation }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const auth = useAuth();
 
-    const handleLogin = async () => {
-        try {
-            const { accessToken, refreshToken } = await login(email, password);
-            await AsyncStorage.setItem('accessToken', accessToken);
-            await AsyncStorage.setItem('refreshToken', refreshToken);
-            Alert.alert('Success', 'Logged in successfully');
-            navigation.navigate('ServisHomeScreen');
-        } catch (error) {
-            Alert.alert('Error', 'Failed to log in');
-        }
-    };
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     return (
         <View style={styles.container}>
-
             <View style={styles.logoContainer}>
                 {/* Logo buraya eklenecek */}
             </View>
@@ -31,7 +22,8 @@ const LoginScreen = ({ navigation }) => {
                 <TextInput
                     style={styles.input}
                     placeholder="Kullanıcı Adı"
-                    onChangeText={(text) => setEmail(text)}
+                    keyboardType="email-address"
+                    onChange={(e) => setEmail(e.target.value)}
                     value={email}
                 />
             </View>
@@ -42,32 +34,12 @@ const LoginScreen = ({ navigation }) => {
                     style={styles.input}
                     placeholder="Şifre"
                     secureTextEntry={true}
-                    onChangeText={(text) => setPassword(text)}
+                    onChange={(e) => setPassword(e.target.value)}
                     value={password}
                 />
             </View>
 
-            {/* <View style={styles.checkboxContainer}>
-                <TouchableOpacity
-                    style={[styles.checkbox, rememberMe && styles.checked]}
-                    onPress={() => setRememberMe(!rememberMe)}
-                >
-                    {rememberMe && <Icon name="check" size={15} color="#fff" />}
-                </TouchableOpacity>
-                <Text style={styles.checkboxText}>Beni Hatırla</Text>
-            </View> */}
-
-            {/* <View style={styles.checkboxContainer}>
-                <TouchableOpacity
-                    style={[styles.checkbox, consent && styles.checked]}
-                    onPress={() => setConsent(!consent)}
-                >
-                    {consent && <Icon name="check" size={15} color="#fff" />}
-                </TouchableOpacity>
-                <Text style={styles.checkboxText}>Rıza Metnini Okudum Onaylıyorum</Text>
-            </View> */}
-
-            <TouchableOpacity style={[styles.button, { width: '100%' }]} onPress={handleLogin}>
+            <TouchableOpacity style={[styles.button, { width: '100%' }]} onClick={() => { auth.login(email, password); }}>
                 <Text style={styles.buttonText}>Giriş Yap</Text>
             </TouchableOpacity>
 
