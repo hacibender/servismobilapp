@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, PermissionsAndroid, Platform, Text, Image, TouchableOpacity } from 'react-native';
 import styles from './DriverProfileStyles';
 
+import MapComponent from '../../components/MapView';
 
 export const DriverRootScreen = () => {
   return (
@@ -23,7 +24,19 @@ export const DriverRootScreen = () => {
                     <Text style={styles.imageButtonTextred}>Fotoğrafı Sil</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </View>   
+         <View style={styles.container}> 
+          <MapComponent
+            ref={mapRef} // Assign the ref to the MapComponent
+            initialRegion={{
+              latitude: 37.78825,
+              longitude: -122.4324,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+            markersData={location ? [location] : []}
+          /> 
+      </View>
       </View>
     </View>
   );

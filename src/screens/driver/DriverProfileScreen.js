@@ -3,17 +3,16 @@ import { View, PermissionsAndroid, Platform, Text, Image, TouchableOpacity, Butt
 import { useNavigation } from '@react-navigation/native';
 import Geolocation from '@react-native-community/geolocation';
 import { useLocationService } from '../../api/locationService';
-import MapComponent from '../../components/MapView';
 import styles from './DriverProfileStyles';
 import {DriverRootScreen} from './DriverRootScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 
 const data = [
-  { id: 1, plaka: '06 AAA 001', slug: 'DriverRootScreen' },
-  { id: 2, plaka: '06 AAA 002' },
-  { id: 3, plaka: '06 AAA 003' },
-  { id: 4, plaka: '06 AAA 004' },
+  { id: 1, plaka: '06 AAA 001', school: 'Levent College' },
+  { id: 2, plaka: '06 AAA 002', school: 'Levent College' },
+  { id: 3, plaka: '06 AAA 003', school: 'Levent College' },
+  { id: 4, plaka: '06 AAA 004', school: 'Levent College' },
 ];
 
 export const DriverProfileScreen = () => {
@@ -90,7 +89,7 @@ export const DriverProfileScreen = () => {
   const renderItem = ({ item }) => (
     <TouchableOpacity onPress={() => navigation.navigate('DriverRootScreen')}>
       <View style={styles.itemContainer}>
-        <Text style={styles.plakaText}>{item.plaka}</Text>
+        <Text style={styles.plakaText}>{item.plaka} , {item.school}, detay</Text>
       </View>
     </TouchableOpacity>
   );
@@ -120,18 +119,7 @@ export const DriverProfileScreen = () => {
 
         </View>
       </View>
-      <View style={styles.container}> 
-          <MapComponent
-            ref={mapRef} // Assign the ref to the MapComponent
-            initialRegion={{
-              latitude: 37.78825,
-              longitude: -122.4324,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-            markersData={location ? [location] : []}
-          /> 
-      </View>
+
 
     </View>
   );
