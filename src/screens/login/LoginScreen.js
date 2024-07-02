@@ -9,19 +9,19 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native'; 
-import { AuthContext } from '../../context/AuthContext'; // Assuming your AuthContext is in a 'hoc' folder
+import { useAuth } from '../../context/AuthContext';
+
 
 const LoginScreen = () => {
   const navigation = useNavigation(); 
 
-  const auth   = useContext(AuthContext); 
-  const login  = useContext(AuthContext);
+  const auth   = useAuth(); 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    // Redirect based on authentication status and role
+
     if (auth?.authData && auth?.authData.isAuth) { // Check if auth?.authData is truthy
       if (auth?.authData.roles.includes("ROOT")) {
         navigation.navigate('AdminDashboardScreen'); 
@@ -37,13 +37,17 @@ const LoginScreen = () => {
         // Handle other roles or default navigation if needed
       }
     }
+
+    console.log(auth.authData,"authdtaa");
   }, [auth?.authData, navigation]); 
 
   const handleLogin = async () => {
     try {
-      await login(email, password);
+      await auth.login(email, password);
+      console.log(email, password, "test login data")
     } catch (error) {
       Alert.alert("Login Error", "Invalid email or password");
+      console.log(error, "err")
     }
   };
   return (
@@ -52,13 +56,14 @@ const LoginScreen = () => {
         {/* Your Logo Here */}
       </View>
       <View style={styles.inputContainer}>
-        <Icon name="people" size={20} color="#7B8794" style={styles.icon} />
+        <Icon name="people" size={20} color="#7B8794" style={styles.icon}/>
         <TextInput
           style={styles.input}
           placeholder="Email Address"
           keyboardType="email-address"
           onChangeText={setEmail}
           value={email}
+           autoCapitalize="none"
         />
       </View>
       <View style={styles.inputContainer}>

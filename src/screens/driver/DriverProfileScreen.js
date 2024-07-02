@@ -4,9 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Geolocation from '@react-native-community/geolocation';
 import { useLocationService } from '../../api/locationService';
 import styles from './DriverProfileStyles';
-import {DriverRootScreen} from './DriverRootScreen';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+
 
 const data = [
   { id: 1, plaka: '06 AAA 001', school: 'Levent College' },
@@ -87,7 +85,7 @@ export const DriverProfileScreen = () => {
   const navigation = useNavigation();
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('DriverRootScreen')}>
+    <TouchableOpacity>
       <View style={styles.itemContainer}>
         <Text style={styles.plakaText}>{item.plaka} , {item.school}, detay</Text>
       </View>

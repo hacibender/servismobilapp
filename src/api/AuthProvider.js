@@ -62,9 +62,8 @@ const AuthProvider = ({ children }) => {
         loading, // Include loading state in context
         login,
         logout,
-        register,
-        verifyAccount,
-        refreshToken, 
+        register
+
       }}
     >
       {children}
