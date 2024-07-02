@@ -9,7 +9,7 @@ const ServisStudentList = ({ navigation }) => {
             name: 'Ali',
             surname: 'Yılmaz',
             phoneNumber: '555 123 45 67',
-            image: require('./images/profilgorsel.png'),
+            image: require('../../images/profilgorsel.png'),
             status: 'Geliyor',
         },
         {
@@ -17,7 +17,7 @@ const ServisStudentList = ({ navigation }) => {
             name: 'Ayşe',
             surname: 'Demir',
             phoneNumber: '555 987 65 43',
-            image: require('./images/profilgorsel.png'),
+            image: require('../../images/profilgorsel.png'),
             status: 'Belirtilmedi',
         },
         {
@@ -25,7 +25,7 @@ const ServisStudentList = ({ navigation }) => {
             name: 'Emre',
             surname: 'Erdem',
             phoneNumber: '555 456 12 13',
-            image: require('./images/profilgorsel.png'),
+            image: require('../../images/profilgorsel.png'),
             status: 'Gelmiyor',
         },
     ];
