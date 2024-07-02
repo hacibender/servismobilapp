@@ -1,8 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, PermissionsAndroid, Platform, Text } from 'react-native';
+import { View, PermissionsAndroid, Platform, Text, Image, TouchableOpacity, Button, FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Geolocation from '@react-native-community/geolocation';
 import { useLocationService } from '../../api/locationService';
 import MapComponent from '../../components/MapView';
+import styles from './DriverProfileStyles';
+import {DriverRootScreen} from './DriverRootScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+
+const data = [
+  { id: 1, plaka: '06 AAA 001', slug: 'DriverRootScreen' },
+  { id: 2, plaka: '06 AAA 002' },
+  { id: 3, plaka: '06 AAA 003' },
+  { id: 4, plaka: '06 AAA 004' },
+];
 
 export const DriverProfileScreen = () => {
   const { sendLocationUpdate } = useLocationService();
@@ -73,20 +85,54 @@ export const DriverProfileScreen = () => {
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
   };
+  const navigation = useNavigation();
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={() => navigation.navigate('DriverRootScreen')}>
+      <View style={styles.itemContainer}>
+        <Text style={styles.plakaText}>{item.plaka}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View>
-      <MapComponent
-        ref={mapRef} // Assign the ref to the MapComponent
-        initialRegion={{
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-        markersData={location ? [location] : []}
+      <View style={styles.container}>
+        <View style={styles.profileImageContainer}>
+            <Image source={require('../../images/profilgorsel.png')} style={styles.profileImage} />
+            <Text>Ad Soyad</Text>
+            <Text>Telefon ve mail bilgileri</Text>
+        </View>
+        <View style={styles.container}>
+      <Text style={styles.baslik}>ARAÇLAR</Text>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
       />
-      <View><Text >dgsfgfdgsdfgfdsgsdfgsdfsp: {location}</Text></View>
+    </View>
+        <View>
+            <Text>ROTALAR</Text>
+            <Text>Levent College 1A sabah öğrenci servisi - link </Text>
+            <Text>Levent College 1A akşam öğrenci servisi - link </Text>
+            <Text>Levent College 2A sabah personel servisi - link </Text>
+            <Text>Levent College 5BA akşam öğrenci servisi - link </Text>
+
+        </View>
+      </View>
+      <View style={styles.container}> 
+          <MapComponent
+            ref={mapRef} // Assign the ref to the MapComponent
+            initialRegion={{
+              latitude: 37.78825,
+              longitude: -122.4324,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+            markersData={location ? [location] : []}
+          /> 
+      </View>
+
     </View>
   );
 };
