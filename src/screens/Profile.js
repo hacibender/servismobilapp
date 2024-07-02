@@ -15,9 +15,16 @@ const ProfileScreen = ({ navigation }) => {
     };
 
     return (
+        // School
+
+        // Parent - Student
+
+        // Driver
+
+
         <View style={styles.container}>
             <View style={styles.profileImageContainer}>
-                <Image source={require('./images/profilgorsel.png')} style={styles.profileImage} />
+                <Image source={require('../../images/profilgorsel.png')} style={styles.profileImage} />
                 <View style={styles.imageButtons}>
                     <TouchableOpacity style={styles.imageButton}>
                         <Text style={styles.imageButtonTextgreen}>Fotoğrafı Değiştir</Text>
