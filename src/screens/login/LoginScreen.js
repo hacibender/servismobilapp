@@ -9,41 +9,48 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native'; 
-import { AuthContext } from '../../context/AuthContext'; // Assuming your AuthContext is in a 'hoc' folder
+import { useAuth } from '../../context/AuthContext';
+
 
 const LoginScreen = () => {
   const navigation = useNavigation(); 
-
-  const auth   = useContext(AuthContext); 
-  const login  = useContext(AuthContext);
-
+  const auth = useAuth(); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isNavigationReady, setIsNavigationReady] = useState(false); // Add this
 
   useEffect(() => {
-    // Redirect based on authentication status and role
-    if (auth?.authData && auth?.authData.isAuth) { // Check if auth?.authData is truthy
-      if (auth?.authData.roles.includes("ROOT")) {
-        navigation.navigate('AdminDashboardScreen'); 
-      } else if (auth?.authData.roles.includes("SCHOOL")) { // Assuming "DRIVER" role
-        navigation.navigate('SchoolProfileScreen'); 
-      } else if (auth?.authData.roles.includes("DRIVER")) { // Assuming "DRIVER" role
-        navigation.navigate('DriverProfileScreen'); 
-      } else if (auth?.authData.roles.includes("PARENT")) { // Assuming "DRIVER" role
-        navigation.navigate('ParentProfileScreen'); 
-      } else if (auth?.authData.roles.includes("STUDENT")) { // Assuming "DRIVER" role
-        navigation.navigate('StudentProfileScreen'); 
-      } else {
-        // Handle other roles or default navigation if needed
+    const timer = setTimeout(() => { // Small delay to ensure navigation is ready
+      setIsNavigationReady(true);
+    }, 500); 
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (isNavigationReady && auth?.authData && auth?.authData.isAuth) { // Check navigation readiness
+        if (auth?.authData.roles.includes("ROOT")) {
+          navigation.navigate('AdminDashboardScreen'); 
+        } else if (auth?.authData.roles.includes("SCHOOL")) { // Assuming "DRIVER" role
+          navigation.navigate('SchoolProfileScreen'); 
+        } else if (auth?.authData.roles.includes("DRIVER")) { // Assuming "DRIVER" role
+          navigation.navigate('DriverProfileScreen'); 
+        } else if (auth?.authData.roles.includes("PARENT")) { // Assuming "DRIVER" role
+          navigation.navigate('ParentProfileScreen'); 
+        } else if (auth?.authData.roles.includes("STUDENT")) { // Assuming "DRIVER" role
+          navigation.navigate('StudentProfileScreen'); 
+        } else {
+          // Handle other roles or default navigation if needed
+        }
       }
-    }
-  }, [auth?.authData, navigation]); 
+  }, [auth, navigation, isNavigationReady]); 
 
   const handleLogin = async () => {
     try {
-      await login(email, password);
+      await auth.login(email, password);
     } catch (error) {
       Alert.alert("Login Error", "Invalid email or password");
+      console.log(error, "err")
     }
   };
   return (
@@ -52,13 +59,14 @@ const LoginScreen = () => {
         {/* Your Logo Here */}
       </View>
       <View style={styles.inputContainer}>
-        <Icon name="people" size={20} color="#7B8794" style={styles.icon} />
+        <Icon name="people" size={20} color="#7B8794" style={styles.icon}/>
         <TextInput
           style={styles.input}
           placeholder="Email Address"
           keyboardType="email-address"
           onChangeText={setEmail}
           value={email}
+           autoCapitalize="none"
         />
       </View>
       <View style={styles.inputContainer}>
