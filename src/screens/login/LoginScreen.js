@@ -14,37 +14,40 @@ import { useAuth } from '../../context/AuthContext';
 
 const LoginScreen = () => {
   const navigation = useNavigation(); 
-
-  const auth   = useAuth(); 
-
+  const auth = useAuth(); 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isNavigationReady, setIsNavigationReady] = useState(false); // Add this
 
   useEffect(() => {
+    const timer = setTimeout(() => { // Small delay to ensure navigation is ready
+      setIsNavigationReady(true);
+    }, 500); 
 
-    if (auth?.authData && auth?.authData.isAuth) { // Check if auth?.authData is truthy
-      if (auth?.authData.roles.includes("ROOT")) {
-        navigation.navigate('AdminDashboardScreen'); 
-      } else if (auth?.authData.roles.includes("SCHOOL")) { // Assuming "DRIVER" role
-        navigation.navigate('SchoolProfileScreen'); 
-      } else if (auth?.authData.roles.includes("DRIVER")) { // Assuming "DRIVER" role
-        navigation.navigate('DriverProfileScreen'); 
-      } else if (auth?.authData.roles.includes("PARENT")) { // Assuming "DRIVER" role
-        navigation.navigate('ParentProfileScreen'); 
-      } else if (auth?.authData.roles.includes("STUDENT")) { // Assuming "DRIVER" role
-        navigation.navigate('StudentProfileScreen'); 
-      } else {
-        // Handle other roles or default navigation if needed
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (isNavigationReady && auth?.authData && auth?.authData.isAuth) { // Check navigation readiness
+        if (auth?.authData.roles.includes("ROOT")) {
+          navigation.navigate('AdminDashboardScreen'); 
+        } else if (auth?.authData.roles.includes("SCHOOL")) { // Assuming "DRIVER" role
+          navigation.navigate('SchoolProfileScreen'); 
+        } else if (auth?.authData.roles.includes("DRIVER")) { // Assuming "DRIVER" role
+          navigation.navigate('DriverProfileScreen'); 
+        } else if (auth?.authData.roles.includes("PARENT")) { // Assuming "DRIVER" role
+          navigation.navigate('ParentProfileScreen'); 
+        } else if (auth?.authData.roles.includes("STUDENT")) { // Assuming "DRIVER" role
+          navigation.navigate('StudentProfileScreen'); 
+        } else {
+          // Handle other roles or default navigation if needed
+        }
       }
-    }
-
-    console.log(auth.authData,"authdtaa");
-  }, [auth?.authData, navigation]); 
+  }, [auth, navigation, isNavigationReady]); 
 
   const handleLogin = async () => {
     try {
       await auth.login(email, password);
-      console.log(email, password, "test login data")
     } catch (error) {
       Alert.alert("Login Error", "Invalid email or password");
       console.log(error, "err")

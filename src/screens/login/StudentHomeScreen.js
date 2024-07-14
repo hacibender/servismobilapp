@@ -6,7 +6,7 @@ import 'moment/locale/tr';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import StudentPopUp from './studentpopup';
+import StudentPopUp from '../parent/studentpopup';
 
 const StudentHomeScreen = ({ navigation }) => {
     const currentDateTime = moment().locale('tr').format('DD MMMM dddd HH:mm');

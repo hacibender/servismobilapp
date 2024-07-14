@@ -13,7 +13,7 @@ const data = [
   { id: 4, plaka: '06 AAA 004', school: 'Levent College' },
 ];
 
-export const DriverProfileScreen = () => {
+export const DriverBusScreen = () => {
   const { sendLocationUpdate } = useLocationService();
   const [location, setLocation] = useState(null);
   const mapRef = useRef(null); // Ref for the MapView component

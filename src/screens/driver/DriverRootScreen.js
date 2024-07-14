@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, PermissionsAndroid, Platform, Text, Image, TouchableOpacity } from 'react-native';
-import styles from './DriverProfileStyles';
+import styles from '../../styles/ProfileStyles';
 
 import MapComponent from '../../components/MapView';
 
