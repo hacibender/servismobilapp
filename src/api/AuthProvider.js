@@ -2,10 +2,17 @@ import { useCallback, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import httpClient from "./httpClient";
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
+import LoginScreen from "../screens/login/LoginScreen";
 
 const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true); // Start with loading = true
-  const [authData, setAuthData] = useState(null);
+  const [authData, setAuthData] = useState({
+    isAuth: false,
+    refreshToken: undefined,
+    accessToken: undefined,
+    roles: [],
+  });
 
   const register = async (userData, successCb) => {};
   const logout = async (email, password) => {};
@@ -54,7 +61,30 @@ const AuthProvider = ({ children }) => {
     };
     bootstrapAsync();
   }, [checkAuth]); 
+  
 
+
+  const refreshToken = () => {
+    httpClient
+      .post(`/auth/refresh-token`, { refreshToken: authData.refreshToken })
+      .then((res) => {
+        setAuthData({
+          ...authData,
+          isAuth: true,
+          accessToken: res.data.accessToken,
+        });
+        localStorage.setItem("access-token", res.data.accessToken); // ... (handle successful refresh)
+      })
+      .catch((err) => {
+        // hata kodu 401 ise...
+        setAuthData({
+          isAuth: false,
+          refreshToken: undefined,
+          accessToken: undefined,
+        });
+        localStorage.clear();
+      });
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -64,7 +94,8 @@ const AuthProvider = ({ children }) => {
         logout,
         register,
         verifyAccount,
-        refreshToken, 
+        refreshToken,
+
       }}
     >
       {children}
