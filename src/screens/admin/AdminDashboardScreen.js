@@ -1,53 +1,90 @@
-import React, { useEffect, useState } from "react";
-
-
-const AdminDashboardScreen = () => {
-  return (
-    <div className="flex flex-col min-h-screen bg-gray-100 w-full">
-      <header className="bg-gray-100 shadow w-full">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-gray-500">Dashboard</h1>
-        </div>
-      </header>
-      <div className="flex w-full">
-        <div className="flex flex-col w-1/6 h-screen bg-[#0758C5] p-4">
-          <nav className="flex flex-col gap-5">
-            <ul className="">
-              <Link href="#" className="text-white">
-                <span className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-md font-medium">
-                  Ana Menü
-                </span>
-              </Link>
-            </ul>
-            <ul className="">
-              <Link href="/VehicleTrack" className="text-white">
-                <span className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-md font-medium">
-                  Araç Takibi
-                </span>
-              </Link>
-            </ul>
-            <ul className="">
-              <Link href="/Stats" className="text-white">
-                <span className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-md font-medium">
-                  İstatistikler
-                </span>
-              </Link>
-            </ul>
-            <ul className="">
-              <Link href="/Rapor" className="text-white">
-                <span className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-md font-medium">
-                  Raporlar
-                </span>
-              </Link>
-            </ul>
-          </nav>
-        </div>
-        <div className="flex flex-col w-4/5 p-4">
-
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default AdminDashboardScreen;
+  import React, { useState, useEffect, useRef } from 'react';
+  import { View, PermissionsAndroid, Platform, Text, Image, TouchableOpacity, Button, FlatList } from 'react-native';
+  import { useNavigation } from '@react-navigation/native';
+  import styles from '../../styles/ProfileStyles';
+  
+  const data = [
+    { id: 1, rota: 'Levent College 1A sabah öğrenci servisi', school: 'Levent College' },
+    { id: 2, rota: 'Levent College 1A sabah öğrenci servisi', school: 'Levent College' },
+    { id: 3, rota: 'Levent College 1A sabah öğrenci servisi', school: 'Levent College' },
+    { id: 4, rota: 'Levent College 1A sabah öğrenci servisi', school: 'Levent College' },
+  ];
+  
+  export const AdminDashboardScreen = () => {
+  
+    const navigation = useNavigation();
+  
+    const renderItem = ({ item }) => (
+      <TouchableOpacity>
+        <View style={styles.itemContainer}>
+          <Text style={styles.plakaText}>{item.plaka} , {item.school}, detay</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  
+    return (
+      <View>
+        <View style={styles.container}>
+          <View style={styles.profileImageContainer}>
+              <Image source={require('../../images/profilgorsel.png')} style={styles.profileImage} />
+              <Text>Ad Soyad</Text>
+              <Text>Telefon ve mail bilgileri</Text>
+          </View>
+          <View style={styles.container}>
+            <Text style={styles.baslik}>OKULLAR</Text>
+            <FlatList
+              data={data}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+            />
+          </View>
+          <View style={styles.container}>
+            <Text style={styles.baslik}>ROTALAR</Text>
+            <FlatList
+              data={data}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+            />
+          </View>
+          <View style={styles.container}>
+            <Text style={styles.baslik}>VELİLER</Text>
+            <FlatList
+              data={data}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+            />
+          </View>
+          <TouchableOpacity onPress={() => navigation.navigate('AdminDashboardScreen')} >
+            <View>
+              <Text>ANASAYFA / DASHBOARD</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('AdminTrackingScreen')}>
+            <View>
+              <Text>ARAÇ TAKİBİ</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('AdminControlScreen')}>
+            <View>
+              <Text>YÖNETİM</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('AdminStatsScreen')}>
+            <View>
+              <Text>İSTATİSTİKLER</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('AdminReportsScreen')}>
+            <View>
+              <Text>RAPORLAR</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+  
+  
+      </View>
+    );
+  };
+  
+  
+  
