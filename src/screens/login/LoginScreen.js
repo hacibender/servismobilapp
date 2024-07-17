@@ -1,20 +1,20 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Alert 
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native'; 
+import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 
 
 const LoginScreen = () => {
-  const navigation = useNavigation(); 
-  const auth = useAuth(); 
+  const navigation = useNavigation();
+  const auth = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isNavigationReady, setIsNavigationReady] = useState(false); // Add this
@@ -22,28 +22,28 @@ const LoginScreen = () => {
   useEffect(() => {
     const timer = setTimeout(() => { // Small delay to ensure navigation is ready
       setIsNavigationReady(true);
-    }, 500); 
+    }, 500);
 
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     if (isNavigationReady && auth?.authData && auth?.authData.isAuth) { // Check navigation readiness
-        if (auth?.authData.roles.includes("ROOT")) {
-          navigation.navigate('AdminDashboardScreen'); 
-        } else if (auth?.authData.roles.includes("SCHOOL")) { // Assuming "DRIVER" role
-          navigation.navigate('SchoolProfileScreen'); 
-        } else if (auth?.authData.roles.includes("DRIVER")) { // Assuming "DRIVER" role
-          navigation.navigate('DriverProfileScreen'); 
-        } else if (auth?.authData.roles.includes("PARENT")) { // Assuming "DRIVER" role
-          navigation.navigate('ParentProfileScreen'); 
-        } else if (auth?.authData.roles.includes("STUDENT")) { // Assuming "DRIVER" role
-          navigation.navigate('StudentProfileScreen'); 
-        } else {
-          // Handle other roles or default navigation if needed
-        }
+      if (auth?.authData.roles.includes("ROOT")) {
+        navigation.navigate('AdminDashboardScreen');
+      } else if (auth?.authData.roles.includes("SCHOOL")) { // Assuming "DRIVER" role
+        navigation.navigate('SchoolProfileScreen');
+      } else if (auth?.authData.roles.includes("DRIVER")) { // Assuming "DRIVER" role
+        navigation.navigate('DriverProfileScreen');
+      } else if (auth?.authData.roles.includes("PARENT")) { // Assuming "DRIVER" role
+        navigation.navigate('ParentProfileScreen');
+      } else if (auth?.authData.roles.includes("STUDENT")) { // Assuming "DRIVER" role
+        navigation.navigate('StudentProfileScreen');
+      } else {
+        // Handle other roles or default navigation if needed
       }
-  }, [auth, navigation, isNavigationReady]); 
+    }
+  }, [auth, navigation, isNavigationReady]);
 
   const handleLogin = async () => {
     try {
@@ -59,14 +59,14 @@ const LoginScreen = () => {
         {/* Your Logo Here */}
       </View>
       <View style={styles.inputContainer}>
-        <Icon name="people" size={20} color="#7B8794" style={styles.icon}/>
+        <Icon name="people" size={20} color="#7B8794" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Email Address"
           keyboardType="email-address"
           onChangeText={setEmail}
           value={email}
-           autoCapitalize="none"
+          autoCapitalize="none"
         />
       </View>
       <View style={styles.inputContainer}>
@@ -79,8 +79,8 @@ const LoginScreen = () => {
           value={password}
         />
       </View>
-      <TouchableOpacity 
-        style={[styles.button, { width: '100%' }]} 
+      <TouchableOpacity
+        style={[styles.button, { width: '100%' }]}
         onPress={handleLogin}
       >
         <Text style={styles.buttonText}>Login</Text>
@@ -93,80 +93,80 @@ const LoginScreen = () => {
 
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    logoContainer: {
-        height: 100,
-        width: 80,
-    },
-    inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    input: {
-        flex: 1,
-        height: 40,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        padding: 10,
-        borderRadius: 10,
-        color: '#7B8794',
-    },
-    icon: {
-        marginRight: 10,
-    },
-    button: {
-        backgroundColor: '#2F80ED',
-        padding: 10,
-        borderRadius: 10,
-        alignItems: 'center',
-        marginTop: 10,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-    forgotPassword: {
-        marginTop: 10,
-        textAlign: 'center',
-        color: '#7B8794',
-    },
-    companyText: {
-        fontSize: 10,
-        textAlign: 'center',
-        marginTop: 20,
-        color: '#7B8794',
-    },
-    checkboxContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
-        alignSelf: 'flex-start',
-    },
-    checkbox: {
-        width: 20,
-        height: 20,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 4,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 8,
-    },
-    checked: {
-        backgroundColor: '#2F80ED',
-        borderColor: '#2F80ED',
-    },
-    checkboxText: {
-        fontSize: 16,
-        color: '#7B8794',
-    },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoContainer: {
+    height: 100,
+    width: 80,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 10,
+    color: '#7B8794',
+  },
+  icon: {
+    marginRight: 10,
+  },
+  button: {
+    backgroundColor: '#2F80ED',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  forgotPassword: {
+    marginTop: 10,
+    textAlign: 'center',
+    color: '#7B8794',
+  },
+  companyText: {
+    fontSize: 10,
+    textAlign: 'center',
+    marginTop: 20,
+    color: '#7B8794',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    alignSelf: 'flex-start',
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  checked: {
+    backgroundColor: '#2F80ED',
+    borderColor: '#2F80ED',
+  },
+  checkboxText: {
+    fontSize: 16,
+    color: '#7B8794',
+  },
 });
 
 export default LoginScreen;
