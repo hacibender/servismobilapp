@@ -1,21 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, FlatList, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import moment from 'moment';
 import 'moment/locale/tr';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import MapViewDirections from 'react-native-maps-directions';
 import DriverBottomNavBar from './DriverBottomNavbar';
 
-const GOOGLE_MAPS_APIKEY = '<AIzaSyBHQRCFiRddxgqe52RO0ua3E21RwyAwwvU>';
+const GOOGLE_MAPS_APIKEY = '<API_KEY>';
 
 const DriverRootScreen = ({ navigation }) => {
   const currentDateTime = moment().locale('tr').format('DD MMMM dddd HH:mm');
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const [startingPoint, setStartingPoint] = useState({
+  const [startingPoint] = useState({
     latitude: 41.0315,
     longitude: 28.9761,
   });
@@ -38,34 +34,62 @@ const DriverRootScreen = ({ navigation }) => {
         tarih: '12.07.2024',
         rota: 'Gülbahar Mahallesi Rotası',
       },
-      school: 'Levent College'
     },
   ];
 
+  const studentData = [
+    {
+      id: 1,
+      rota: {
+        okul: 'Levent College',
+        ogrenci: 'Emre Erdem',
+        durum: 'Geldi',
+      },
+    },
+    {
+      id: 2,
+      rota: {
+        okul: 'Levent College',
+        ogrenci: 'Ceyhun Erdem',
+        durum: 'Gelmedi',
+      },
+    },
+    {
+      id: 3,
+      rota: {
+        okul: 'Levent College',
+        ogrenci: 'Emre Erdem',
+        durum: 'Ulaşılamadı',
+      },
+    },
+  ];
+
+  const renderItem = ({ item }) => {
+    const { rota } = item;
+    return (
+      <View style={styles.studentItemContainer}>
+        <Text style={styles.studentItemSchoolText}>{rota.okul}</Text>
+        <Text style={styles.studentItemFirstText}>{rota.ogrenci}</Text>
+
+        <View style={styles.studentButtonContainer}>
+          <TouchableOpacity style={styles.greenButton}>
+            <Icon name="check" size={20} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.redButton}>
+            <Icon name="close" size={20} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
+
   const renderRouteItem = ({ item }) => {
     const { rota } = item;
-    let textColor;
-
-    switch (rota.durum) {
-      case 'Başarılı':
-        textColor = '#2E7D32';
-        break;
-      case 'Başarısız':
-        textColor = '#D32F2F';
-        break;
-      case 'Gecikmeli':
-        textColor = '#FFC107';
-        break;
-      default:
-        textColor = '#555';
-        break;
-    }
-
     return (
-      <TouchableOpacity onPress={() => navigation.navigate('DriverRootScreen')} style={styles.itemContainer}>
-        <Text style={[styles.itemSchoolText, { color: '#555' }]}>{rota.okul}</Text>
-        <Text style={[styles.itemFirstText, { color: '#555' }]}>{rota.servis} {rota.plaka}</Text>
-        <Text style={[styles.itemText, { color: '#555' }]}>{rota.zaman} {rota.tarih}</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('DriverRootScreen')} style={styles.routeItemContainer}>
+        <Text style={[styles.routeItemSchoolText, { color: '#555' }]}>{rota.okul}</Text>
+        <Text style={[styles.routeItemFirstText, { color: '#555' }]}>{rota.servis} {rota.plaka}</Text>
+        <Text style={[styles.routeItemText, { color: '#555' }]}>{rota.zaman} {rota.tarih}</Text>
         <Text>{rota.rota}</Text>
       </TouchableOpacity>
     );
@@ -120,6 +144,15 @@ const DriverRootScreen = ({ navigation }) => {
             style={styles.routeList}
           />
         </View>
+        <View>
+          <Text style={styles.studentsTitle}>Öğrenciler</Text>
+          <FlatList
+            data={studentData}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            style={styles.routeList}
+          />
+        </View>
       </ScrollView>
       <DriverBottomNavBar style={styles.bottomNavBar} />
     </View>
@@ -133,7 +166,7 @@ const styles = StyleSheet.create({
   },
   scrollContentContainer: {
     padding: 20,
-    paddingBottom: 80, // BottomNavBar için yer açıyoruz
+    paddingBottom: 80,
   },
   title: {
     fontSize: 24,
@@ -190,7 +223,60 @@ const styles = StyleSheet.create({
   routeList: {
     flexGrow: 1,
   },
-  itemContainer: {
+  studentItemContainer: {
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 2 },
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  studentItemText: {
+    fontSize: 14,
+    color: '#555',
+  },
+  studentItemSchoolText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#555',
+  },
+  studentItemFirstText: {
+    fontSize: 15,
+    fontWeight: '300',
+    color: '#555',
+  },
+  studentButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  greenButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#2E7D32',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  redButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#D32F2F',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  studentsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  routeItemContainer: {
     backgroundColor: '#fff',
     padding: 12,
     borderRadius: 8,
@@ -200,18 +286,18 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 2 },
   },
-  itemText: {
+  routeItemText: {
     fontSize: 13,
     color: '#555',
     marginBottom: 4,
   },
-  itemSchoolText: {
+  routeItemSchoolText: {
     fontSize: 12,
     fontWeight: '700',
     color: '#555',
     marginBottom: 4,
   },
-  itemFirstText: {
+  routeItemFirstText: {
     fontSize: 15,
     fontWeight: '300',
     marginBottom: 4,
