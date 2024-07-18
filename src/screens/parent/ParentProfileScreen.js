@@ -37,58 +37,16 @@ const ParentProfileScreen = ({ navigation }) => {
             },
             school: 'Levent College'
         },
-        {
-            id: 3,
-            rota: {
-                okul: 'Levent College',
-                servis: '1A Sabah Servisi',
-                plaka: '34 ABC 32',
-                zaman: '06:10 - 07:50',
-                tarih: '14.07.2024',
-                durum: 'Başarısız'
-            },
-            school: 'Levent College'
-        },
-        {
-            id: 4,
-            rota: {
-                okul: 'Levent College',
-                servis: '1A Sabah Servisi',
-                plaka: '34 ABC 32',
-                zaman: '06:10 - 07:50',
-                tarih: '15.07.2024',
-                durum: 'Gecikmeli'
-            },
-            school: 'Levent College'
-        },
     ];
 
     const renderRouteItem = ({ item }) => {
         const { rota } = item;
-        let textColor;
-
-        // rota.durum değerine göre metin rengini belirliyoruz
-        switch (rota.durum) {
-            case 'Başarılı':
-                textColor = '#2E7D32'; // Başarılı durumu için yeşil renk
-                break;
-            case 'Başarısız':
-                textColor = '#D32F2F'; // Başarısız durumu için kırmızı renk
-                break;
-            case 'Gecikmeli':
-                textColor = '#FFC107'; // Gecikmeli durumu için sarı renk
-                break;
-            default:
-                textColor = '#555'; // Diğer durumlar için varsayılan gri renk
-                break;
-        }
 
         return (
             <TouchableOpacity style={styles.itemContainer}>
                 <Text style={[styles.itemSchoolText, { color: '#555' }]}>{rota.okul}</Text>
                 <Text style={[styles.itemFirstText, { color: '#555' }]}>{rota.servis} {rota.plaka}</Text>
                 <Text style={[styles.itemText, { color: '#555' }]}>{rota.zaman} {rota.tarih}</Text>
-                <Text style={{ color: textColor }}>{rota.durum}</Text>
             </TouchableOpacity>
         );
     };

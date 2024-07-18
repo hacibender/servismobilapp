@@ -40,7 +40,7 @@ function App() {
     <AuthProvider>
       <SafeAreaView style={{ flex: 1 }}>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="DriverProfileScreen">
+          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="StudentProfileScreen">
             <Stack.Group>
               <Stack.Screen name="LoginScreen" component={LoginScreen} />
               <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
