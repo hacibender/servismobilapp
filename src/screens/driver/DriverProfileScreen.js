@@ -45,7 +45,6 @@ const DriverProfileScreen = ({ navigation }) => {
     const { rota } = item;
     let textColor;
 
-    // rota.durum değerine göre metin rengini belirliyoruz
     switch (rota.durum) {
       case 'Başarılı':
         textColor = '#2E7D32'; // Başarılı durumu için yeşil renk

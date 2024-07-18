@@ -5,6 +5,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Platform, PermissionsAndroid, FlatList, ScrollView } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import io from 'socket.io-client';
+import SchoolBottomNavBar from './SchoolBottomNavBar';
 
 const routeData = [
     {
@@ -260,26 +261,7 @@ const SchollProfileScreen = ({ navigation }) => {
             </ScrollView>
 
             <View style={styles.bottomMenu}>
-                <TouchableOpacity style={styles.bottomMenuItem} onPress={() => navigation.navigate('Profile')}>
-                    <Icon name="person" size={24} color="#000" />
-                    <Text style={styles.bottomMenuText}>Profil</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.bottomMenuItem} onPress={() => navigation.navigate('ServisHomeScreen')}>
-                    <Icon name="location-on" size={24} color="#000" />
-                    <Text style={styles.bottomMenuText}>Canlı Takip</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.bottomMenuItem} onPress={() => navigation.navigate('ServisStudentList')}>
-                    <Icon name="people" size={24} color="#000" />
-                    <Text style={styles.bottomMenuText}>Veli/Öğrenci</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.bottomMenuItem} onPress={() => navigation.navigate('ServisHomeScreen')}>
-                    <Icon name="map" size={24} color="#000" />
-                    <Text style={styles.bottomMenuText}>Rota/Güzergah</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.bottomMenuItem} onPress={() => navigation.navigate('Profile')}>
-                    <Icon name="analytics" size={24} color="#000" />
-                    <Text style={styles.bottomMenuText}>İstatistikler</Text>
-                </TouchableOpacity>
+                <SchoolBottomNavBar />
             </View>
         </View>
     );
@@ -426,12 +408,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     bottomMenu: {
-        flexDirection: 'row',
-        justifyContent: 'space-between', // Her iki yana tamamen uzanacak şekilde ayarlandı
-        borderTopWidth: 1,
+        justifyContent: 'space-between',
         borderTopColor: '#ccc',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
         backgroundColor: '#FFF',
         position: 'absolute',
         bottom: 0,
