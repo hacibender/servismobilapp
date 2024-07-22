@@ -1,273 +1,239 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { io } from "socket.io-client";
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Image, TextInput } from 'react-native';
-import MapView from '../../components/MapView'; 
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList, Modal, TextInput } from 'react-native';
+import ParentBottomNavBar from './ParentBottomNavBar';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const ParentStatsScreen = ({ navigation }) => {
-    const [driverLocations, setDriverLocations] = useState([]);
-    const [driverLocation, setDriverLocation] = useState(null);
-    const socket = useRef();
-    const mapRef = useRef(null); // Reference to the MapView
-    const [oldPassword, setOldPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [activeTab, setActiveTab] = useState('profile');
+const ParentStatsScreen = () => {
 
-    const handleSavePassword = () => {
-        console.log('Eski Şifre:', oldPassword);
-        console.log('Yeni Şifre:', newPassword);
+    const sikayetEt = () => {
     };
-  useEffect(() => {
-    // Connect to your WebSocket server when the component mounts
-    socket.current = io('wss://rest-j2kjfrifbq-ez.a.run.app/ws'); 
 
-    socket.current.on('connect', () => {
-      console.log('Connected to the websocket server'); 
-    });
+    const [modalVisible, setModalVisible] = useState(false);
 
-    // Listen for location updates from the driver
-    socket.current.on('driverLocationUpdate', (location) => {
-      setDriverLocation(location); 
-
-      // Optional: Animate map to the new location smoothly
-      if (mapRef.current) {
-        mapRef.current.animateToRegion({
-          latitude: location.latitude,
-          longitude: location.longitude,
-          latitudeDelta: 0.01,  // Adjust zoom as needed
-          longitudeDelta: 0.01, 
-        }, 1000); // Animation duration in milliseconds
-      }
-    });
-
-    return () => {
-      // Disconnect from the WebSocket server when the component unmounts
-      socket.current.disconnect(); 
+    const openModal = () => {
+        setModalVisible(true);
     };
-  }, []);
 
-  return (
-    <View>
-    <View style={styles.container}>
-      <MapView
-        ref={mapRef} 
-        style={styles.map}
-        initialRegion={{
-          latitude: 37.78825, // Default initial location (replace with a relevant location)
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-      >
-        {driverLocation && ( 
-          <Marker
-            coordinate={{
-              latitude: driverLocation.latitude,
-              longitude: driverLocation.longitude,
-            }}
-            title="School Bus" // You can customize the marker
-          />
-        )}
-      </MapView>
-    </View>
-            <View style={styles.container}>
-            <View style={styles.profileImageContainer}>
-                <Image source={require('../../images/profilgorsel.png')} style={styles.profileImage} />
-                <View style={styles.imageButtons}>
-                    <TouchableOpacity style={styles.imageButton}>
-                        <Text style={styles.imageButtonTextgreen}>Parent Fotoğrafı Değiştir</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.imageButton}>
-                        <Text style={styles.imageButtonTextred}>Fotoğrafı Sil</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+    const closeModal = () => {
+        setModalVisible(false);
+    }
 
-            <View style={styles.sliderButtons}>
-                <TouchableOpacity
-                    style={[styles.sliderButton, activeTab === 'profile' && styles.activeButton]}
-                    onPress={() => setActiveTab('profile')}
-                >
-                    <Text style={styles.sliderButtonText}>Profil Bilgileri</Text>
+    const routeData = [
+        {
+            id: 1,
+            rota: {
+                okul: 'Levent College',
+                servis: '1A Sabah Servisi',
+                plaka: '34 ABC 32',
+                zaman: '06:10 - 07:50',
+                tarih: '12.07.2024',
+                durum: 'Başarılı'
+            },
+            school: 'Levent College'
+        },
+        {
+            id: 2,
+            rota: {
+                okul: 'Levent College',
+                servis: '1A Sabah Servisi',
+                plaka: '34 ABC 32',
+                zaman: '06:10 - 07:50',
+                tarih: '13.07.2024',
+                durum: 'Başarılı'
+            },
+            school: 'Levent College'
+        },
+        {
+            id: 3,
+            rota: {
+                okul: 'Levent College',
+                servis: '1A Sabah Servisi',
+                plaka: '34 ABC 32',
+                zaman: '06:10 - 07:50',
+                tarih: '14.07.2024',
+                durum: 'Başarısız'
+            },
+            school: 'Levent College'
+        },
+    ];
+
+    const renderRouteItem = ({ item }) => {
+        const { rota } = item;
+
+        const durumStyle = rota.durum === 'Başarılı' ? styles.successText : styles.failText;
+
+        return (
+            <TouchableOpacity style={styles.itemContainer}>
+                <Text style={styles.itemSchoolText}>{rota.okul}</Text>
+                <Text style={styles.itemFirstText}>{rota.servis} {rota.plaka}</Text>
+                <Text style={styles.itemText}>{rota.zaman} {rota.tarih}</Text>
+                <Text style={[styles.itemText, durumStyle]}>{rota.durum}</Text>
+            </TouchableOpacity>
+        );
+    };
+
+    return (
+        <View style={styles.screenContainer}>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <Text style={styles.headerText}>Raporlar ve Şikayet</Text>
+                <FlatList
+                    data={routeData}
+                    renderItem={renderRouteItem}
+                    keyExtractor={(item) => item.id.toString()}
+                />
+            </ScrollView>
+            <View style={styles.gelmiyorum}>
+                <TouchableOpacity style={styles.complainButton} onPress={openModal}>
+                    <Icon name="sms-failed" size={20} color="#fff" />
                 </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.sliderButton, activeTab === 'password' && styles.activeButton]}
-                    onPress={() => setActiveTab('password')}
-                >
-                    <Text style={styles.sliderButtonText}>Şifre İşlemleri</Text>
-                </TouchableOpacity>
-            </View>
-
-            {activeTab === 'profile' && (
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Profil Bilgileri</Text>
-                    <Text>Kullanıcı Adı: JohnDoe</Text>
-                    <Text>Email: johndoe@example.com</Text>
-                    <Text>Telefon: 555 123 45 67</Text>
-                </View>
-            )}
-
-            {activeTab === 'password' && (
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Şifre İşlemleri</Text>
-                    <View style={styles.inputContainer}>
-                        <Icon name="lock" size={20} color="#7B8794" style={styles.icon} />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Eski Şifre"
-                            secureTextEntry={true}
-                            value={oldPassword}
-                            onChangeText={setOldPassword}
-                        />
+                <Modal
+                    animationType='slide'
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={closeModal}>
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <Icon name="markunread-mailbox" size={50} color="#D32F2F" style={styles.icon} />
+                            <Text style={styles.modalTitle}>Şikayetiniz Nedir?</Text>
+                            <Text style={styles.modalText}>Sadece Okul Yönetimi Tarafından Görünecektir</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Şikayetinizi Yazabilirsiniz"
+                                multiline={true}
+                                numberOfLines={4}>
+                            </TextInput>
+                            <View style={styles.popupButtonArea}>
+                                <TouchableOpacity style={styles.popupButton} onPress={closeModal}>
+                                    <Text style={styles.popupButtonText}>Gönder</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
-                    <View style={styles.inputContainer}>
-                        <Icon name="lock" size={20} color="#7B8794" style={styles.icon} />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Yeni Şifre"
-                            secureTextEntry={true}
-                            value={newPassword}
-                            onChangeText={setNewPassword}
-                        />
-                    </View>
-                    <TouchableOpacity style={styles.button} onPress={handleSavePassword}>
-                        <Text style={styles.buttonText}>Kaydet</Text>
-                    </TouchableOpacity>
-                </View>
-            )}
-
-            <View style={styles.bottomMenu}>
-                <TouchableOpacity style={styles.bottomMenuItem} onPress={() => navigation.navigate('ServisStudentList')}>
-                    <Icon name="people" size={24} color="#000" />
-                    <Text style={styles.bottomMenuText}>Öğrenciler</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.bottomMenuItem} onPress={() => navigation.navigate('ServisHomeScreen')}>
-                    <Icon name="map" size={24} color="#000" />
-                    <Text style={styles.bottomMenuText}>Harita</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.bottomMenuItem} onPress={() => navigation.navigate('Profile')}>
-                    <Icon name="person" size={24} color="#000" />
-                    <Text style={styles.bottomMenuText}>Profil</Text>
-                </TouchableOpacity>
+                </Modal>
             </View>
-            <MapView
-        initialRegion={{ /* ... */ }}
-        markersData={driverLocations} 
-      />
+            <ParentBottomNavBar />
         </View>
-    </View>
-  );
+    );
 };
 
 const styles = StyleSheet.create({
-    container: {
+    screenContainer: {
         flex: 1,
-        padding: 20,
+        backgroundColor: '#f5f5f5',
+    },
+    scrollContainer: {
+        paddingBottom: 80, // Buton ve Navbar için yer bırakmak amacıyla padding ekledim
+    },
+    headerText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        margin: 10,
+    },
+    itemContainer: {
         backgroundColor: '#fff',
+        padding: 15,
+        marginVertical: 8,
+        marginHorizontal: 16,
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 2,
     },
-    map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-    },
-    profileImageContainer: {
-        alignItems: 'center',
-        marginBottom: 20,
-    },
-    profileImage: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-    },
-    imageButtons: {
-        flexDirection: 'row',
-        marginTop: 10,
-    },
-    imageButton: {
-        marginHorizontal: 10,
-    },
-    imageButtonTextgreen: {
-        color: '#2E7D32',
-        fontSize: 16,
-    },
-    imageButtonTextred: {
-        color: '#D32F2F',
-        fontSize: 16,
-    },
-    sliderButtons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 20,
-    },
-    sliderButton: {
-        flex: 1,
-        alignItems: 'center',
-        paddingVertical: 10,
-        borderBottomWidth: 2,
-        borderBottomColor: 'transparent',
-    },
-    activeButton: {
-        borderBottomColor: '#007AFF',
-    },
-    sliderButtonText: {
+    itemSchoolText: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#323F4B',
     },
-    section: {
-        marginBottom: 20,
+    itemFirstText: {
+        fontSize: 16,
+        color: '#333',
     },
-    sectionTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        color: '#323F4B',
+    itemText: {
+        fontSize: 14,
+        color: '#666',
     },
-    inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
+    successText: {
+        color: 'green',
     },
-    input: {
-        flex: 1,
-        height: 40,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        padding: 10,
-        borderRadius: 10,
-        color: '#7B8794',
+    failText: {
+        color: 'red',
     },
-    icon: {
-        marginRight: 10,
+    complainButton: {
+        position: 'absolute',
+        bottom: 40, // Navbar'a daha yakın olacak şekilde ayarlandı
+        right: 20,
+        backgroundColor: '#ff6347',
+        padding: 15,
+        borderRadius: 50,
+        shadowColor: '#000',
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+        elevation: 5,
     },
-    button: {
-        backgroundColor: '#2F80ED',
-        padding: 10,
-        borderRadius: 10,
-        alignItems: 'center',
-        marginTop: 10,
-    },
-    buttonText: {
+    complainButtonText: {
         color: '#fff',
+        fontWeight: 'bold',
         fontSize: 16,
     },
-    bottomMenu: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        borderTopWidth: 1,
-        borderTopColor: '#ccc',
-        paddingTop: 10,
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        backgroundColor: '#fff',
-        alignSelf: 'center'
+    gelmiyorum: {
+        width: '100%'
     },
-    bottomMenuItem: {
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        width: '80%',
+        backgroundColor: '#fff',
+        padding: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    modalTitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    modalText: {
+        fontSize: 16,
+        color: '#666',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    input: {
+        width: '100%',
+        height: 100,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 8,
+        padding: 10,
+        textAlignVertical: 'top',
+        marginBottom: 20,
+    },
+    popupButtonArea: {
+        width: '100%',
         alignItems: 'center',
     },
-    bottomMenuText: {
-        fontSize: 12,
-        marginTop: 5,
+    popupButton: {
+        backgroundColor: '#ff6347',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        shadowColor: '#000',
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    popupButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
 });
 

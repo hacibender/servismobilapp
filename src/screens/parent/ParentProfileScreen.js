@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Dimensions, ScrollView, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import ParentBottomNavBar from './ParentBottomNavBar';
 
 const ParentProfileScreen = ({ navigation }) => {
     const [oldPassword, setOldPassword] = useState('');
@@ -44,9 +45,9 @@ const ParentProfileScreen = ({ navigation }) => {
 
         return (
             <TouchableOpacity style={styles.itemContainer}>
-                <Text style={[styles.itemSchoolText, { color: '#555' }]}>{rota.okul}</Text>
-                <Text style={[styles.itemFirstText, { color: '#555' }]}>{rota.servis} {rota.plaka}</Text>
-                <Text style={[styles.itemText, { color: '#555' }]}>{rota.zaman} {rota.tarih}</Text>
+                <Text style={styles.itemSchoolText}>{rota.okul}</Text>
+                <Text style={styles.itemFirstText}>{rota.servis} {rota.plaka}</Text>
+                <Text style={styles.itemText}>{rota.zaman} {rota.tarih}</Text>
             </TouchableOpacity>
         );
     };
@@ -58,10 +59,10 @@ const ParentProfileScreen = ({ navigation }) => {
                     <Image source={require('../../images/profilgorsel.png')} style={styles.profileImage} />
                     <View style={styles.imageButtons}>
                         <TouchableOpacity style={styles.imageButton}>
-                            <Text style={styles.imageButtonTextgreen}>Fotoğrafı Değiştir</Text>
+                            <Text style={styles.imageButtonTextGreen}>Fotoğrafı Değiştir</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.imageButton}>
-                            <Text style={styles.imageButtonTextred}>Fotoğrafı Sil</Text>
+                            <Text style={styles.imageButtonTextRed}>Fotoğrafı Sil</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -85,7 +86,7 @@ const ParentProfileScreen = ({ navigation }) => {
                         <Text style={styles.sectionTitle}>Veli Bilgileri</Text>
                         <View style={styles.infoContainer}>
                             <Text style={styles.label}>Veli Adı:</Text>
-                            <Text style={styles.infoText}>JohnDoe</Text>
+                            <Text style={styles.infoText}>John Doe</Text>
                         </View>
                         <View style={styles.infoContainer}>
                             <Text style={styles.label}>Email:</Text>
@@ -142,21 +143,8 @@ const ParentProfileScreen = ({ navigation }) => {
                     </View>
                 )}
             </ScrollView>
-
             <View style={styles.bottomMenu}>
-                <TouchableOpacity style={styles.bottomMenuItem} onPress={() => navigation.navigate('Profile')}>
-                    <Icon name="person" size={24} color="#000" />
-                    <Text style={styles.bottomMenuText}>Profil</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.bottomMenuItem} onPress={() => navigation.navigate('ServisHomeScreen')}>
-                    <Icon name="location-on" size={24} color="#000" />
-                    <Text style={styles.bottomMenuText}>Canlı Takip</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.bottomMenuItem} onPress={() => navigation.navigate('ServisStudentList')}>
-                    <Icon name="feedback" size={24} color="#000" />
-                    <Text style={styles.bottomMenuText}>Şikayet Et</Text>
-                </TouchableOpacity>
-
+                <ParentBottomNavBar />
             </View>
         </View>
     );
@@ -165,15 +153,26 @@ const ParentProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#f5f5f5',
     },
     scrollViewContent: {
         flexGrow: 1,
-        paddingBottom: 120, // Bottom menu alanı için padding ekleyelim
+        paddingBottom: 120,
     },
     profileImageContainer: {
         alignItems: 'center',
         marginBottom: 20,
+    },
+    bottomMenu: {
+        justifyContent: 'space-between',
+        borderTopColor: '#ccc',
+        paddingHorizontal: 10,
+        backgroundColor: '#FFF',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        gap: 8,
     },
     profileImage: {
         width: 120,
@@ -198,11 +197,11 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
-    imageButtonTextgreen: {
+    imageButtonTextGreen: {
         color: '#2E7D32',
         fontSize: 16,
     },
-    imageButtonTextred: {
+    imageButtonTextRed: {
         color: '#D32F2F',
         fontSize: 16,
     },
@@ -256,16 +255,6 @@ const styles = StyleSheet.create({
     infoText: {
         color: '#7B8794',
     },
-    additionalInfo: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 5,
-    },
-    additionalInfoText: {
-        fontWeight: 'bold',
-        marginLeft: 5,
-        color: '#333',
-    },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -301,29 +290,6 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#FFF',
         fontSize: 16,
-    },
-    bottomMenu: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        borderTopWidth: 1,
-        borderTopColor: '#ccc',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        backgroundColor: '#FFF',
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        gap: 70,
-        width: '100%'
-    },
-    bottomMenuItem: {
-        alignItems: 'center',
-    },
-    bottomMenuText: {
-        fontSize: 12,
-        marginTop: 5,
-        color: '#333',
     },
     whiteBackground: {
         backgroundColor: '#FFF',

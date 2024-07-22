@@ -7,7 +7,7 @@ import LoginScreen from './src/screens/login/LoginScreen';
 import { AdminDashboardScreen } from './src/screens/admin/AdminDashboardScreen';
 import { AdminTrackingScreen } from './src/screens/admin/AdminTrackingScreen';
 import { AdminControlScreen } from './src/screens/admin/AdminControlScreen';
-import { AdminStatsScreen } from './src/screens/admin/AdminStatsScreen';
+import AdminStatsScreen from './src/screens/admin/AdminStatsScreen';
 import { AdminReportsScreen } from './src/screens/admin/AdminReportsScreen';
 import ForgotPasswordScreen from './src/screens/login/ForgotPasswordScreen';
 import ResetPasswordScreen from './src/screens/login/ResetPasswordScreen';
@@ -40,7 +40,7 @@ function App() {
     <AuthProvider>
       <SafeAreaView style={{ flex: 1 }}>
         <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="SchoolRootScreen">
+          <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="AdminDashboardScreen">
             <Stack.Group>
               <Stack.Screen name="LoginScreen" component={LoginScreen} />
               <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
