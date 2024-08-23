@@ -1,4 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 import { 
   View, 
   Text, 
@@ -9,14 +10,25 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native'; 
-import { useAuth } from '../../context/AuthContext';
 
 
 const LoginScreen = () => {
-  const navigation = useNavigation(); 
-  const auth = useAuth(); 
+  const { login, authData } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigation = useNavigation(); 
+
+  const handleLogin = async () => {
+    try {
+      await login(email, password);
+      if (authData.roles && authData.roles.includes('ROOT')) {
+        navigation.navigate('AdminDashboardScreen'); 
+      } 
+    } catch (error) {
+      Alert.alert("Login Error", "Invalid email or password");
+      console.error(error, "err");
+    }
+  };
   const [isNavigationReady, setIsNavigationReady] = useState(false); // Add this
 
   useEffect(() => {
@@ -28,31 +40,23 @@ const LoginScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (isNavigationReady && auth?.authData && auth?.authData.isAuth) { // Check navigation readiness
-        if (auth?.authData.roles.includes("ROOT")) {
+    if (isNavigationReady && authData && authData.isAuth) { // Check navigation readiness
+        if (authData.roles.includes("ROOT")) {
           navigation.navigate('AdminDashboardScreen'); 
-        } else if (auth?.authData.roles.includes("SCHOOL")) { // Assuming "DRIVER" role
+        } else if (authData.roles.includes("SCHOOL")) { // Assuming "DRIVER" role
           navigation.navigate('SchoolProfileScreen'); 
-        } else if (auth?.authData.roles.includes("DRIVER")) { // Assuming "DRIVER" role
+        } else if (authData.roles.includes("DRIVER")) { // Assuming "DRIVER" role
           navigation.navigate('DriverProfileScreen'); 
-        } else if (auth?.authData.roles.includes("PARENT")) { // Assuming "DRIVER" role
+        } else if (authData.roles.includes("PARENT")) { // Assuming "DRIVER" role
           navigation.navigate('ParentProfileScreen'); 
-        } else if (auth?.authData.roles.includes("STUDENT")) { // Assuming "DRIVER" role
+        } else if (authData.roles.includes("STUDENT")) { // Assuming "DRIVER" role
           navigation.navigate('StudentProfileScreen'); 
         } else {
           // Handle other roles or default navigation if needed
         }
       }
-  }, [auth, navigation, isNavigationReady]); 
+  }, [navigation, isNavigationReady]); 
 
-  const handleLogin = async () => {
-    try {
-      await auth.login(email, password);
-    } catch (error) {
-      Alert.alert("Login Error", "Invalid email or password");
-      console.log(error, "err")
-    }
-  };
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>

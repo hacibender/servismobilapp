@@ -1,117 +1,147 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, PermissionsAndroid, Platform, Text, Image, TouchableOpacity, Button, FlatList } from 'react-native';
-
-import { useNavigation } from '@react-navigation/native'; 
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
 import styles from '../../styles/ProfileStyles';
+import {
+  userAPI,
+  schoolAPI,
+  schoolbusAPI,
+  parentAPI,
+  driverAPI,
+  routeAPI,
+  studentAPI,
+  reportAPI,
+  tripAPI,
+} from '../../api/api';
 
-const data = [
-  { id: 1, rota: 'Levent College 1A sabah öğrenci servisi', school: 'Levent College' },
-  { id: 2, rota: 'Levent College 1A sabah öğrenci servisi', school: 'Levent College' },
-  { id: 3, rota: 'Levent College 1A sabah öğrenci servisi', school: 'Levent College' },
-  { id: 4, rota: 'Levent College 1A sabah öğrenci servisi', school: 'Levent College' },
+const dataTypes = [
+  { type: 'school', api: schoolAPI, title: 'Schools' },
+  { type: 'driver', api: driverAPI, title: 'Drivers' },
+  { type: 'schoolbus', api: schoolbusAPI, title: 'School Buses' },
+  { type: 'student', api: studentAPI, title: 'Students' },
+  { type: 'route', api: routeAPI, title: 'Routes' },
 ];
 
 export const AdminDashboardScreen = () => {
-  const auth = useAuth(); 
+  const auth = useAuth();
   const navigation = useNavigation();
-  const [isNavigationReady, setIsNavigationReady] = useState(false); // Add this
+  const [userData, setUserData] = useState(null);
+  const [listData, setListData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => { // Small delay to ensure navigation is ready
-      setIsNavigationReady(true);
-    }, 500); 
+    const fetchData = async () => {
+      try {
+        const user = await userAPI.getById(auth.authData.user.id);
+        setUserData(user);
 
-    return () => clearTimeout(timer);
-  }, []);
-  useEffect(() => {
-    if (isNavigationReady && auth?.authData && auth?.authData.isAuth) { // Check navigation readiness
-        if (auth?.authData.roles.includes("ROOT")) {
-          navigation.navigate('AdminDashboardScreen'); 
-        } else if (auth?.authData.roles.includes("SCHOOL")) { // Assuming "DRIVER" role
-          navigation.navigate('SchoolProfileScreen'); 
-        } else if (auth?.authData.roles.includes("DRIVER")) { // Assuming "DRIVER" role
-          navigation.navigate('DriverProfileScreen'); 
-        } else if (auth?.authData.roles.includes("PARENT")) { // Assuming "DRIVER" role
-          navigation.navigate('ParentProfileScreen'); 
-        } else if (auth?.authData.roles.includes("STUDENT")) { // Assuming "DRIVER" role
-          navigation.navigate('StudentProfileScreen'); 
-        } else {
-          // Handle other roles or default navigation if needed
-        }
+        const dataPromises = dataTypes.map(async ({ type, api }) => {
+          const data = await api.getAll();
+          return { type, data };
+        });
+
+        const allData = await Promise.all(dataPromises);
+        const newData = {};
+        allData.forEach(({ type, data }) => {
+          newData[type] = data;
+        });
+        setListData(newData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
       }
-  }, [auth, navigation, isNavigationReady]); 
+    };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity>
+    fetchData();
+  }, []);
+
+  const renderItem = ({ item, type }) => (
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate('Details', { itemId: item.id, type });
+      }}
+    >
       <View style={styles.itemContainer}>
-        <Text style={styles.plakaText}>{item.plaka} , {item.school}, detay</Text>
+        <Text>
+          {type === 'school' && item.name}
+          {type === 'driver' && `${item.firstName} ${item.lastName}`}
+          {type === 'schoolbus' && item.plateNumber}
+          {type === 'student' && `${item.firstName} ${item.lastName}`}
+          {type === 'route' && item.name}
+        </Text>
       </View>
     </TouchableOpacity>
   );
 
   return (
-    <View>
-      <View style={styles.container}>
-        <View style={styles.profileImageContainer}>
-            <Image source={require('../../images/profilgorsel.png')} style={styles.profileImage} />
-            <Text>Ad Soyad</Text>
-            <Text>Telefon ve mail bilgileri</Text>
-        </View>
-        <View style={styles.container}>
-          <Text style={styles.baslik}>OKULLAR</Text>
-          <FlatList
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id.toString()}
-          />
-        </View>
-        <View style={styles.container}>
-          <Text style={styles.baslik}>ROTALAR</Text>
-          <FlatList
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id.toString()}
-          />
-        </View>
-        <View style={styles.container}>
-          <Text style={styles.baslik}>VELİLER</Text>
-          <FlatList
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id.toString()}
-          />
-        </View>
-        <TouchableOpacity onPress={() => navigation.navigate('AdminDashboardScreen')} >
-          <View>
-            <Text>ANASAYFA / DASHBOARD</Text>
+    <View style={styles.container}>
+      {/* Profile Section */}
+      <View style={styles.profileContainer}>
+        {userData ? (
+          <View style={styles.profileInfo}>
+            {/* Assuming you have a profile image component */}
+            <Image
+              source={require('../../images/profilgorsel.png')}
+              style={styles.profileImage}
+            />
+            <View>
+              <Text style={styles.userName}>
+                {userData.firstName} {userData.lastName}
+              </Text>
+            </View>
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('AdminTrackingScreen')}>
-          <View>
-            <Text>ARAÇ TAKİBİ</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('AdminControlScreen')}>
-          <View>
-            <Text>YÖNETİM</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('AdminStatsScreen')}>
-          <View>
-            <Text>İSTATİSTİKLER</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('AdminReportsScreen')}>
-          <View>
-            <Text>RAPORLAR</Text>
-          </View>
-        </TouchableOpacity>
+        ) : (
+          <ActivityIndicator size="large" color="#0000ff" />
+        )}
       </View>
 
+      {/* Data Lists Section */}
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <FlatList
+          data={dataTypes}
+          keyExtractor={({ type }) => type}
+          renderItem={({ item: { type, title } }) => (
+            <View style={styles.listSection}>
+              <Text style={styles.sectionTitle}>{title}</Text>
+              <FlatList
+                data={listData[type] || []}
+                renderItem={(item) => renderItem({ ...item, type })}
+                keyExtractor={(item) => item.id.toString()}
+              />
+            </View>
+          )}
+        />
+      )}
 
+      {/* Navigation Buttons */}
+      <View style={styles.navigationContainer}>
+        {/* Use a mapping approach for navigation buttons */}
+        {[
+          { screen: 'AdminDashboard', label: 'Home' },
+          { screen: 'AdminTracking', label: 'Tracking' },
+          { screen: 'AdminControl', label: 'Manage' },
+          { screen: 'AdminStats', label: 'Stats' },
+          { screen: 'AdminReports', label: 'Reports' },
+        ].map(({ screen, label }) => (
+          <TouchableOpacity
+            key={screen}
+            onPress={() => navigation.navigate(screen)}
+            style={styles.navigationButton}
+          >
+            <Text style={styles.navigationButtonText}>{label}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   );
 };
-
-

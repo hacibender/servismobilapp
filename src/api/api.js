@@ -43,18 +43,17 @@ api.interceptors.response.use(
     }
 );
 
-// Login isteği
+// Auth endpoints
 export const login = async (email, password) => {
     try {
         const response = await api.post('/auth/login', { email, password });
-        return response.data; // Response'da accessToken ve refreshToken olacak
+        return response.data;
     } catch (error) {
         console.error('Error logging in:', error);
         throw error;
     }
 };
 
-// Şifreyi unuttum isteği
 export const forgotPassword = async (email) => {
     try {
         const response = await api.post('/auth/forgot-password', { email });
@@ -65,7 +64,6 @@ export const forgotPassword = async (email) => {
     }
 };
 
-// Şifreyi sıfırlama isteği
 export const resetPassword = async (token, newPassword) => {
     try {
         const response = await api.post('/auth/reset-password', { token, newPassword });
@@ -76,7 +74,6 @@ export const resetPassword = async (token, newPassword) => {
     }
 };
 
-// Access token yenileme isteği
 export const refreshAccessToken = async (refreshToken) => {
     try {
         const response = await api.post('/auth/refresh-token', { refreshToken });
@@ -87,3 +84,75 @@ export const refreshAccessToken = async (refreshToken) => {
     }
 };
 
+// User Me function
+export const userMe = async () => {
+    try {
+        const response = await api.get('/user/me');
+        return response.data;
+    } catch (error) {
+        console.error('Error getting User Me data', error);
+        throw error;
+    }
+};
+
+// Define API functions for each resource
+const createResourceAPI = (resourceName) => {
+    return {
+        getAll: async () => {
+            try {
+                const response = await api.get(`/${resourceName}`);
+                return response.data;
+            } catch (error) {
+                console.error(`Error getting ${resourceName}:`, error);
+                throw error;
+            }
+        },
+        getById: async (id) => {
+            try {
+                const response = await api.get(`/${resourceName}/${id}`);
+                return response.data;
+            } catch (error) {
+                console.error(`Error getting ${resourceName} by ID:`, error);
+                throw error;
+            }
+        },
+        create: async (data) => {
+            try {
+                const response = await api.post(`/${resourceName}`, data);
+                return response.data;
+            } catch (error) {
+                console.error(`Error creating ${resourceName}:`, error);
+                throw error;
+            }
+        },
+        update: async (id, data) => {
+            try {
+                const response = await api.put(`/${resourceName}/${id}`, data);
+                return response.data;
+            } catch (error) {
+                console.error(`Error updating ${resourceName}:`, error);
+                throw error;
+            }
+        },
+        delete: async (id) => {
+            try {
+                const response = await api.delete(`/${resourceName}/${id}`);
+                return response.data;
+            } catch (error) {
+                console.error(`Error deleting ${resourceName}:`, error);
+                throw error;
+            }
+        },
+    };
+};
+
+// Create API instances for each resource
+export const userAPI = createResourceAPI('user');
+export const schoolAPI = createResourceAPI('school');
+export const schoolbusAPI = createResourceAPI('schoolbus');
+export const parentAPI = createResourceAPI('parent');
+export const driverAPI = createResourceAPI('driver');
+export const routeAPI = createResourceAPI('route');
+export const studentAPI = createResourceAPI('student'); 
+export const reportAPI = createResourceAPI('report');
+export const tripAPI = createResourceAPI('trip'); 
