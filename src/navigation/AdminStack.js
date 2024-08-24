@@ -1,12 +1,13 @@
+// AdminStack.js
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { AdminDashboardScreen } from '../screens/admin/AdminDashboardScreen';
 import { AdminTrackingScreen } from '../screens/admin/AdminTrackingScreen';
 import { AdminControlScreen } from '../screens/admin/AdminControlScreen';
 import { AdminStatsScreen } from '../screens/admin/AdminStatsScreen';
 import { AdminReportsScreen } from '../screens/admin/AdminReportsScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 const AdminStack = () => {
   return (

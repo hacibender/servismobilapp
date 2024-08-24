@@ -1,65 +1,105 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
+//Authcontext.js
+import React, { createContext, useState, useEffect } from 'react';
 import { login, userMe } from '../api/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const AuthContext = createContext({});
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [authData, setAuthData] = useState({
+  const [authState, setAuthState] = useState({
     user: null,
     accessToken: null,
     refreshToken: null,
+    isLoading: true,
     isAuth: false,
-    roles: [], 
+    roles: [], // Initialize roles as an empty array
   });
 
   const authenticate = async (email, password) => {
+    setAuthState({ ...authState, isLoading: true });
     try {
       const response = await login(email, password);
-      console.log('Login response:', response); 
+      console.log('response :>> ', response);
 
       if (response.accessToken && response.refreshToken) {
-        setAuthData({
-          ...authData,
-          user: response.user, 
+        await AsyncStorage.setItem('accessToken', response.accessToken);
+        await AsyncStorage.setItem('refreshToken', response.refreshToken);
+
+        const userResponse = await userMe(); // Fetch user data
+        console.log('userResponse :>> ', userResponse);
+        setAuthState({
+          ...authState,
+          user: userResponse,
           accessToken: response.accessToken,
           refreshToken: response.refreshToken,
+          isLoading: false,
           isAuth: true,
-          roles: response.user.roles, 
+          roles: userResponse.roles || [], // Ensure roles is an array or an empty array if not available
         });
-
-        
       } else {
+        // Handle invalid response format
         console.error('Invalid login response format:', response);
+        setAuthState({ ...authState, isLoading: false, isAuth: false });
+        throw new Error('Invalid login response');
       }
     } catch (error) {
       console.error('Error during login:', error);
-      throw error; 
+      setAuthState({ ...authState, isLoading: false, isAuth: false });
+      throw error;
     }
   };
 
+  const logout = async () => {
+    setAuthState({
+      ...authState,
+      isLoading: false,
+      isAuth: false,
+      user: null,
+      accessToken: null,
+      refreshToken: null,
+      roles: [],
+    });
+    await AsyncStorage.removeItem('accessToken');
+    await AsyncStorage.removeItem('refreshToken');
+  };
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (authData.isAuth) {
-        try {
-          const userData = await userMe(); 
-          console.log('User data:', userData); 
-          setAuthData({ ...authData, user: userData });
-        } catch (error) {
-          console.error('Error fetching user data:', error);
+    const checkLoginStatus = async () => {
+      try {
+        const accessToken = await AsyncStorage.getItem('accessToken');
+        const refreshToken = await AsyncStorage.getItem('refreshToken');
+
+        if (accessToken && refreshToken) {
+          const userResponse = await userMe();
+          setAuthState({
+            ...authState,
+            user: userResponse,
+            accessToken,
+            refreshToken,
+            isLoading: false,
+            isAuth: true,
+            roles: userResponse.roles || [], // Ensure roles is an array
+          });
+        } else {
+          // Not authenticated, update state
+          setAuthState({ ...authState, isLoading: false, isAuth: false });
         }
+      } catch (error) {
+        console.error('Error checking login status:', error);
+        setAuthState({ ...authState, isLoading: false, isAuth: false });
       }
     };
 
-    fetchUserData(); 
-  }, [authData.isAuth]); 
+    checkLoginStatus();
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ authData, login: authenticate }}>
+    <AuthContext.Provider value={{ authState, login: authenticate, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => {
-  return useContext(AuthContext);
+  return React.useContext(AuthContext);
 };

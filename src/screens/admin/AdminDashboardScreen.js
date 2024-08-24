@@ -5,10 +5,11 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
+  Image, // Don't forget to import Image
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
-import styles from '../../styles/ProfileStyles';
+import styles from '../../styles/ProfileStyles'; // Assuming you have a style sheet for this
 import {
   userAPI,
   schoolAPI,
@@ -30,16 +31,18 @@ const dataTypes = [
 ];
 
 export const AdminDashboardScreen = () => {
-  const auth = useAuth();
+  const { authState } = useAuth();
   const navigation = useNavigation();
+
   const [userData, setUserData] = useState(null);
   const [listData, setListData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
-        const user = await userAPI.getById(auth.authData.user.id);
+        const user = await userAPI.getById(authState.user.id); 
         setUserData(user);
 
         const dataPromises = dataTypes.map(async ({ type, api }) => {
@@ -60,26 +63,34 @@ export const AdminDashboardScreen = () => {
       }
     };
 
-    fetchData();
-  }, []);
+    // Only fetch data if authenticated 
+    if (authState.isAuth) { 
+      fetchData();
+    }
+  }, [authState.isAuth]); // Re-run if authState.isAuth changes
 
   const renderItem = ({ item, type }) => (
     <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('Details', { itemId: item.id, type });
-      }}
+      style={styles.itemContainer} 
+      onPress={() => navigation.navigate('Details', { itemId: item.id, type })}
     >
-      <View style={styles.itemContainer}>
-        <Text>
-          {type === 'school' && item.name}
-          {type === 'driver' && `${item.firstName} ${item.lastName}`}
-          {type === 'schoolbus' && item.plateNumber}
-          {type === 'student' && `${item.firstName} ${item.lastName}`}
-          {type === 'route' && item.name}
-        </Text>
-      </View>
+      <Text>
+        {type === 'school' && item.name}
+        {type === 'driver' && `${item.firstName} ${item.lastName}`}
+        {type === 'schoolbus' && item.plateNumber}
+        {type === 'student' && `${item.firstName} ${item.lastName}`}
+        {type === 'route' && item.name}
+      </Text>
     </TouchableOpacity>
   );
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}> 
+        <ActivityIndicator size="large" color="#2F80ED" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -87,55 +98,47 @@ export const AdminDashboardScreen = () => {
       <View style={styles.profileContainer}>
         {userData ? (
           <View style={styles.profileInfo}>
-            {/* Assuming you have a profile image component */}
             <Image
-              source={require('../../images/profilgorsel.png')}
+              source={require('../../images/profilgorsel.png')} 
               style={styles.profileImage}
             />
-            <View>
-              <Text style={styles.userName}>
-                {userData.firstName} {userData.lastName}
-              </Text>
-            </View>
+            <Text style={styles.userName}>
+              {userData.firstName} {userData.lastName}
+            </Text>
           </View>
         ) : (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <Text>Loading profile...</Text>
         )}
       </View>
 
       {/* Data Lists Section */}
-      {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <FlatList
-          data={dataTypes}
-          keyExtractor={({ type }) => type}
-          renderItem={({ item: { type, title } }) => (
-            <View style={styles.listSection}>
-              <Text style={styles.sectionTitle}>{title}</Text>
-              <FlatList
-                data={listData[type] || []}
-                renderItem={(item) => renderItem({ ...item, type })}
-                keyExtractor={(item) => item.id.toString()}
-              />
-            </View>
-          )}
-        />
-      )}
+      <FlatList
+        data={dataTypes}
+        keyExtractor={({ type }) => type}
+        renderItem={({ item: { type, title } }) => (
+          <View style={styles.listSection}>
+            <Text style={styles.sectionTitle}>{title}</Text>
+            <FlatList
+              data={listData[type] || []} 
+              renderItem={(item) => renderItem({ ...item, type })}
+              keyExtractor={(item) => item.id.toString()} 
+            />
+          </View>
+        )}
+      />
 
       {/* Navigation Buttons */}
       <View style={styles.navigationContainer}>
-        {/* Use a mapping approach for navigation buttons */}
         {[
-          { screen: 'AdminDashboard', label: 'Home' },
-          { screen: 'AdminTracking', label: 'Tracking' },
-          { screen: 'AdminControl', label: 'Manage' },
-          { screen: 'AdminStats', label: 'Stats' },
-          { screen: 'AdminReports', label: 'Reports' },
+          { screen: 'AdminDashboardScreen', label: 'Home' }, 
+          { screen: 'AdminTrackingScreen', label: 'Tracking' },
+          { screen: 'AdminControlScreen', label: 'Manage' },
+          { screen: 'AdminStatsScreen', label: 'Stats' },
+          { screen: 'AdminReportsScreen', label: 'Reports' },
         ].map(({ screen, label }) => (
           <TouchableOpacity
             key={screen}
-            onPress={() => navigation.navigate(screen)}
+            onPress={() => navigation.navigate(screen)} 
             style={styles.navigationButton}
           >
             <Text style={styles.navigationButtonText}>{label}</Text>

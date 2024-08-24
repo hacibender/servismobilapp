@@ -1,3 +1,4 @@
+//App.js
 import React from 'react';
 import { SafeAreaView, View, Text } from 'react-native';
 import AppNavigation from './src/navigation/AppNavigation';
@@ -25,3 +26,4 @@ const styles = NativeWindStyleSheet.create({
 });
 
 export default App;
+

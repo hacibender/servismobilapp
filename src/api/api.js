@@ -1,57 +1,75 @@
+// api.js
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { handleTokenRefresh } from './helpers/authHelper';
 
 const api = axios.create({
-    baseURL: 'https://rest-j2kjfrifbq-ez.a.run.app',
-    timeout: 10000,
+  baseURL: 'https://rest-j2kjfrifbq-ez.a.run.app',
+  timeout: 10000,
 });
 
 // Request interceptor
 api.interceptors.request.use(
-    async (config) => {
-        const accessToken = await AsyncStorage.getItem('accessToken');
-        if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
+  async (config) => {
+    const accessToken = await AsyncStorage.getItem('accessToken');
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
-// Response interceptor
+// Response interceptor with retry logic
 api.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-        const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
-            try {
-                const newAccessToken = await handleTokenRefresh();
-                axios.defaults.headers.common['Authorization'] = 'Bearer ' + newAccessToken;
-                return api(originalRequest);
-            } catch (error) {
-                // Yenileme başarısız olursa kullanıcıyı logout yap
-                await AsyncStorage.removeItem('accessToken');
-                await AsyncStorage.removeItem('refreshToken');
-                // Gerekirse kullanıcıyı login ekranına yönlendirebilirsin
-            }
-        }
-        return Promise.reject(error);
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        // Get refresh token
+        const refreshToken = await AsyncStorage.getItem('refreshToken');
+
+        // Refresh access token
+        const refreshResponse = await axios.post(
+          'https://rest-j2kjfrifbq-ez.a.run.app/auth/refresh-token',
+          { refreshToken }
+        );
+
+        // Update config with new token
+        const newAccessToken = refreshResponse.data.accessToken;
+        originalRequest.headers.Authorization = 'Bearer ' + newAccessToken;
+
+        // Store the new tokens
+        await AsyncStorage.setItem('accessToken', newAccessToken);
+
+        // Retry original request
+        return api(originalRequest);
+      } catch (refreshError) {
+        console.error('Token refresh failed:', refreshError);
+
+        // Handle refresh token error (e.g., logout)
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.removeItem('refreshToken');
+        return Promise.reject(refreshError);
+      }
     }
+    return Promise.reject(error);
+  }
 );
 
 // Auth endpoints
 export const login = async (email, password) => {
-    try {
-        const response = await api.post('/auth/login', { email, password });
-        return response.data;
-    } catch (error) {
-        console.error('Error logging in:', error);
-        throw error;
-    }
+  try {
+    const response = await api.post('/auth/login', { email, password });
+    return response.data;
+  } catch (error) {
+    console.error('Error logging in:', error);
+    throw error;
+  }
 };
 
 export const forgotPassword = async (email) => {

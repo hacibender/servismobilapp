@@ -1,37 +1,55 @@
-import React from 'react';
+// AppNavigation.js
+import React, { useContext } from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import AuthProvider from '../api/AuthProvider';
-import AuthStack from './AuthStack'; // Login, ForgotPassword, etc.
+import { AuthContext } from '../context/AuthContext';
+
+// Import your Stack Navigators
+import AuthStack from './AuthStack';
 import AdminStack from './AdminStack';
 import SchoolStack from './SchoolStack';
 import DriverStack from './DriverStack';
 import ParentStack from './ParentStack';
 import StudentStack from './StudentStack';
 
-import { useAuth } from '../context/AuthContext';
+const Stack = createStackNavigator();
 
 const AppNavigation = () => {
-  const { user } = useAuth(); // Assuming your AuthContext provides user data
+  const { authState, loading } = useContext(AuthContext);
+  console.log('AppNavigation authData', authState);
+
+  if (loading) {
+    // You can show a loading indicator here
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <NavigationContainer>
-      {user ? (
-        // Conditionally render based on user role
-        user.role === 'admin' ? (
-            <AdminStack />
-        ) : user.role === 'school' ? (
-            <SchoolStack />
-        ) : user.role === 'driver' ? (
-            <DriverStack />
-        ) : user.role === 'parent' ? (
-            <ParentStack />
-        ) : user.role === 'student' ? (
-            <StudentStack />
-        ) : // ... other roles
-        null
-      ) : (
-        <AuthStack />
-      )}
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {!authState.isAuth ? (
+          // User is not authenticated, show AuthStack
+          <Stack.Screen name="Auth" component={AuthStack} />
+        ) : (
+          // User is authenticated, show appropriate stack based on roles
+          <>
+            {authState.roles.includes('ROOT') && (
+              <Stack.Screen name="Admin" component={AdminStack} />
+            )}
+            {authState.roles.includes('SCHOOL') && (
+              <Stack.Screen name="School" component={SchoolStack} />
+            )}
+            {authState.roles.includes('DRIVER') && (
+              <Stack.Screen name="Driver" component={DriverStack} />
+            )}
+            {authState.roles.includes('PARENT') && (
+              <Stack.Screen name="Parent" component={ParentStack} />
+            )}
+            {authState.roles.includes('STUDENT') && (
+              <Stack.Screen name="Student" component={StudentStack} />
+            )}
+          </>
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

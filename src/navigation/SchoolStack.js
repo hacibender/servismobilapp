@@ -1,5 +1,5 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import SchoolProfileScreen from '../screens/school/SchoolProfileScreen';
 import SchoolRoutesScreen from '../screens/school/SchoolRootsScreen';
 import SchoolRouteScreen from '../screens/school/SchoolRootScreen';
@@ -8,7 +8,7 @@ import SchoolUserScreen from '../screens/school/SchoolUserScreen';
 import SchoolBusesScreen from '../screens/school/SchoolBusesScreen';
 import SchoolDriversScreen from '../screens/school/SchoolDriversScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 const SchoolStack = () => {
   return (

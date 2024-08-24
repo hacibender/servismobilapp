@@ -1,12 +1,12 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import ParentProfileScreen from '../screens/parent/ParentProfileScreen';
 import ParentStudentsScreen from '../screens/parent/ParentStudentsScreen';
 import ParentRootScreen from '../screens/parent/ParentRootScreen';
 import ParentStatsScreen from '../screens/parent/ParentStatsScreen';
 import StudentProfileScreen from '../screens/parent/StudentProfileScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 const ParentStack = () => {
   return (

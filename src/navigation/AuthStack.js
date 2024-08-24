@@ -1,10 +1,11 @@
+// AuthStack.js
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/login/LoginScreen';
 import ForgotPasswordScreen from '../screens/login/ForgotPasswordScreen';
 import ResetPasswordScreen from '../screens/login/ResetPasswordScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 const AuthStack = () => {
   return (
@@ -17,6 +18,3 @@ const AuthStack = () => {
 };
 
 export default AuthStack;
-
-
-
