@@ -60,7 +60,7 @@ const AuthProvider = ({ children }) => {
     try {
       const accessToken = await AsyncStorage.getItem('access-token');
       if (accessToken) {
-        const res = await api.userMe(); // Use your userMe function
+        const res = await api.login(); // Use your userMe function
         setAuthData({
           isAuth: true,
           accessToken,
@@ -78,12 +78,12 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const bootstrapAsync = async () => {
-  //     await checkAuth();
-  //   };
-  //   bootstrapAsync();
-  // }, [checkAuth]);
+  useEffect(() => {
+    const bootstrapAsync = async () => {
+      await checkAuth();
+    };
+    bootstrapAsync();
+  }, [checkAuth]);
 
   const refreshToken = () => {
     api
